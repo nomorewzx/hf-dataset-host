@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>MiniHFHub - Datasets</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fb; }
+        .dataset-card { background: #fff; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 1rem; }
+        h1 { margin-bottom: 1.5rem; }
+        a { color: #2563eb; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Datasets</h1>
+    {% if datasets %}
+        {% for dataset in datasets %}
+            <div class="dataset-card">
+                <h2><a href="/datasets/{{ dataset.id }}">{{ dataset.id }}</a></h2>
+                <p>Last updated: {{ dataset.updated_at }}</p>
+                <p>Revision: {{ dataset.sha or 'unknown' }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No datasets cached yet. Query an API endpoint to populate metadata.</p>
+    {% endif %}
+</body>
+</html>

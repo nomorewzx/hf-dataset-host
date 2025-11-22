@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ dataset.id }} - MiniHFHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fb; }
+        .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+        code { background: #eef2ff; padding: 0.25rem 0.35rem; border-radius: 4px; }
+        ul { line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>{{ dataset.id }}</h1>
+        <p><strong>Revision:</strong> {{ dataset.sha or 'unknown' }}</p>
+        <p><strong>Splits:</strong> {{ dataset.splits | join(', ') if dataset.splits else 'none detected' }}</p>
+        <h3>Files</h3>
+        {% if dataset.files %}
+            <ul>
+            {% for file in dataset.files %}
+                <li><a href="/datasets/{{ dataset.id }}/resolve/main/{{ file }}">{{ file }}</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No files available.</p>
+        {% endif %}
+        {% if dataset.dataset_info %}
+        <h3>dataset_info.json</h3>
+        <pre>{{ dataset.dataset_info }}</pre>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  gitea:
+    image: gitea/gitea:1.22.0
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__database__PATH=/data/gitea/gitea.db
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__service__DISABLE_REGISTRATION=false
+      - GITEA__server__DOMAIN=localhost
+      - GITEA__server__ROOT_URL=http://localhost:3000/
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__server__LFS_START_SERVER=true
+      - GITEA__server__LFS_CONTENT_PATH=/data/git/lfs
+    volumes:
+      - ./gitea:/data
+    ports:
+      - "3000:3000"
+      - "222:22"
+
+  minihfhub:
+    build: ./minihfhub
+    container_name: minihfhub
+    environment:
+      - DATABASE_URL=sqlite:///./data/minihfhub.db
+      - GITEA_API_BASE=http://gitea:3000/api/v1
+      - GITEA_RAW_BASE=http://gitea:3000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - gitea
+    ports:
+      - "8000:8000"
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: minihfhub-proxy
+    depends_on:
+      - minihfhub
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
